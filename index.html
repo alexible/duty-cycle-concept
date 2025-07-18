@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duty Cycle Concept</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow: hidden;
+        }
+
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            width: 95%;
+            max-width: 1200px;
+            height: 90vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.2em;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .formula-box {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.3em;
+        }
+
+        .visual-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .waveform {
+            width: 600px;
+            height: 200px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 560px;
+            height: 160px;
+        }
+
+        .wave-line {
+            stroke: #667eea;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .wave-fill {
+            fill: rgba(102, 126, 234, 0.2);
+        }
+
+        .grid-line {
+            stroke: #e2e8f0;
+            stroke-width: 1;
+        }
+
+        .axis-label {
+            font-size: 12px;
+            fill: #4a5568;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .example-card {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .example-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .example-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .highlight {
+            background: #fed7d7;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .application-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .app-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.1em;
+        }
+
+        .led-demo {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 10px;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { background: #4299e1; }
+            51%, 100% { background: #e2e8f0; }
+        }
+
+        .pwm-visual {
+            width: 100%;
+            height: 150px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .pwm-pulse {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            width: calc(100% - 40px);
+            height: 80px;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="slideshow-container">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">15</span>
+        </div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>🔄 Duty Cycle Concept</h1>
+            <div class="definition-box">
+                <h2>Understanding Signal Timing in Electronics</h2>
+                <p>A fundamental concept in digital electronics, power systems, and control engineering</p>
+            </div>
+            <div class="visual-container">
+                <div class="led-demo"></div>
+                <span style="font-size: 1.5em; margin: 0 20px;">Signal On/Off Pattern</span>
+                <div class="led-demo"></div>
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <h3>Topics We'll Cover:</h3>
+                <div class="application-list">
+                    <div class="app-item">Definition</div>
+                    <div class="app-item">Formula</div>
+                    <div class="app-item">Visual Examples</div>
+                    <div class="app-item">Real Applications</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: What is a Complete Cycle? -->
+        <div class="slide">
+            <h1>🔄 What is a Complete Cycle?</h1>
+            <div class="definition-box">
+                <strong>Complete Cycle:</strong> One full repetition of a pattern - from start, through all changes, back to start
+            </div>
+            
+            <div class="visual-container">
+                <svg class="waveform" viewBox="0 0 600 200">
+                    <!-- Complete cycle illustration -->
+                    <g transform="translate(50, 50)">
+                        <!-- One complete cycle highlighted -->
+                        <rect x="0" y="0" width="120" height="100" fill="rgba(102, 126, 234, 0.1)" stroke="#667eea" stroke-width="2" stroke-dasharray="5,5"/>
+                        <text x="60" y="-10" text-anchor="middle" class="axis-label" style="font-size: 16px; font-weight: bold;">ONE COMPLETE CYCLE</text>
+                        
+                        <!-- Waveform -->
+                        <path d="M 0 80 L 0 20 L 60 20 L 60 80 L 120 80 L 120 20 L 180 20 L 180 80 L 240 80 L 240 20 L 300 20 L 300 80 L 360 80 L 360 20 L 420 20 L 420 80 L 480 80" 
+                              stroke="#667eea" stroke-width="4" fill="none"/>
+                        
+                        <!-- Labels -->
+                        <text x="60" y="110" text-anchor="middle" class="axis-label" style="font-size: 14px;">Period (T)</text>
+                        <text x="180" y="110" text-anchor="middle" class="axis-label" style="font-size: 14px;">Period (T)</text>
+                        <text x="300" y="110" text-anchor="middle" class="axis-label" style="font-size: 14px;">Period (T)</text>
+                    </g>
+                </svg>
+            </div>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>🌊 Real-World Examples</h4>
+                    <p><strong>• Clock tick:</strong> Tick-tock-tick = 1 cycle</p>
+                    <p><strong>• Heart beat:</strong> Lub-dub-pause = 1 cycle</p>
+                    <p><strong>• Breathing:</strong> Inhale-exhale = 1 cycle</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>⚡ Electronic Cycles</h4>
+                    <p><strong>• AC power:</strong> 50Hz = 50 cycles/second</p>
+                    <p><strong>• PWM signal:</strong> 1kHz = 1000 cycles/second</p>
+                    <p><strong>• Each cycle:</strong> ON time + OFF time</p>
+                </div>
+            </div>
+            
+            <div class="definition-box">
+                <h3>💡 Key Understanding:</h3>
+                <p>A cycle repeats over and over. Duty cycle tells us what percentage of each cycle the signal is ON.</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Definition -->
+        <div class="slide">
+            <h1>📖 What is Duty Cycle?</h1>
+            <div class="definition-box">
+                <strong>Duty Cycle:</strong> The percentage of time a signal is in its "high" or "on" state during one complete cycle
+            </div>
+            
+            <h3>Key Concepts:</h3>
+            <div style="font-size: 1.2em; line-height: 1.8;">
+                <p><strong>• Period (T):</strong> Total time for one complete cycle</p>
+                <p><strong>• On-Time (t_on):</strong> Time signal is HIGH/ON</p>
+                <p><strong>• Off-Time (t_off):</strong> Time signal is LOW/OFF</p>
+                <p><strong>• Relationship:</strong> T = t_on + t_off</p>
+            </div>
+
+            <div class="formula-box">
+                <h3>📐 Duty Cycle Formula</h3>
+                <p><strong>Duty Cycle (%) = (t_on / T) × 100%</strong></p>
+                <p>Where: t_on = ON time, T = Total period</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Why Do We Need Duty Cycle? -->
+        <div class="slide">
+            <h1>🤔 Why Do We Need Duty Cycle?</h1>
+            <div class="definition-box">
+                <h3>🎯 The Problem: Why Not Just Use a Potentiometer?</h3>
+            </div>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>🔧 Potentiometer Method</h4>
+                    <p><strong>How:</strong> Variable resistor reduces voltage</p>
+                    <p><strong>Problem:</strong> Wastes energy as heat</p>
+                    <p><strong>Example:</strong> 50% dimming = 50% energy lost as heat!</p>
+                    <p><strong>Issues:</strong> Hot, inefficient, limited control</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>⚡ PWM/Duty Cycle Method</h4>
+                    <p><strong>How:</strong> Rapidly switches ON/OFF</p>
+                    <p><strong>Advantage:</strong> No energy wasted as heat</p>
+                    <p><strong>Example:</strong> 50% dimming = 50% energy to LED</p>
+                    <p><strong>Benefits:</strong> Cool, efficient, precise control</p>
+                </div>
+            </div>
+            
+            <h3>🏆 Key Benefits of Duty Cycle Control:</h3>
+            <div style="font-size: 1.2em; line-height: 2;">
+                <p><strong>1. Energy Efficiency:</strong> Up to 95% efficient vs 50% with potentiometer</p>
+                <p><strong>2. Precise Control:</strong> Can adjust in tiny increments (0.1%)</p>
+                <p><strong>3. No Heat Generation:</strong> Switch is either fully ON or OFF</p>
+                <p><strong>4. Digital Control:</strong> Easy to control with computers/microcontrollers</p>
+                <p><strong>5. Fast Response:</strong> Can change thousands of times per second</p>
+            </div>
+            
+            <div class="definition-box">
+                <h3>💡 Real Example:</h3>
+                <p>Your phone's screen brightness uses PWM - that's why it's so efficient and doesn't get hot!</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Who Controls the Switching? -->
+        <div class="slide">
+            <h1>🎛️ Who Controls the ON/OFF Switching?</h1>
+            <div class="definition-box">
+                <h3>🔌 The Electronic "Switch" - Who's in Control?</h3>
+            </div>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>🧠 The Controller</h4>
+                    <p><strong>Microcontroller:</strong> Arduino, Raspberry Pi</p>
+                    <p><strong>IC Chips:</strong> Timer ICs (555 timer)</p>
+                    <p><strong>Dedicated PWM:</strong> Motor driver chips</p>
+                    <p><strong>Computer:</strong> Software-generated signals</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>⚡ The Physical Switch</h4>
+                    <p><strong>MOSFET:</strong> Most common (electronic switch)</p>
+                    <p><strong>Transistor:</strong> BJT for smaller loads</p>
+                    <p><strong>Relay:</strong> For high-power AC loads</p>
+                    <p><strong>Integrated:</strong> Built into motor drivers</p>
+                </div>
+            </div>
+            
+            <div class="visual-container">
+                <svg class="waveform" viewBox="0 0 600 200">
+                    <!-- Control system diagram -->
+                    <g transform="translate(50, 50)">
+                        <!-- Controller box -->
+                        <rect x="0" y="30" width="100" height="40" fill="#667eea" stroke="#4a5568" stroke-width="2"/>
+                        <text x="50" y="55" text-anchor="middle" class="axis-label" style="font-size: 12px; fill: white;">CONTROLLER</text>
+                        <text x="50" y="15" text-anchor="middle" class="axis-label" style="font-size: 10px;">Arduino/Timer IC</text>
+                        
+                        <!-- Arrow -->
+                        <path d="M 100 50 L 140 50" stroke="#e53e3e" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <text x="120" y="40" text-anchor="middle" class="axis-label" style="font-size: 10px;">PWM Signal</text>
+                        
+                        <!-- Switch -->
+                        <rect x="150" y="30" width="80" height="40" fill="#38a169" stroke="#2d3748" stroke-width="2"/>
+                        <text x="190" y="55" text-anchor="middle" class="axis-label" style="font-size: 12px; fill: white;">SWITCH</text>
+                        <text x="190" y="15" text-anchor="middle" class="axis-label" style="font-size: 10px;">MOSFET/Transistor</text>
+                        
+                        <!-- Arrow -->
+                        <path d="M 230 50 L 270 50" stroke="#e53e3e" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <text x="250" y="40" text-anchor="middle" class="axis-label" style="font-size: 10px;">Switched Power</text>
+                        
+                        <!-- Load -->
+                        <rect x="280" y="30" width="80" height="40" fill="#f6ad55" stroke="#c05621" stroke-width="2"/>
+                        <text x="320" y="55" text-anchor="middle" class="axis-label" style="font-size: 12px; fill: white;">LOAD</text>
+                        <text x="320" y="15" text-anchor="middle" class="axis-label" style="font-size: 10px;">LED/Motor</text>
+                        
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                                    refX="10" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#e53e3e"/>
+                            </marker>
+                        </defs>
+                    </g>
+                </svg>
+            </div>
+            
+            <div class="definition-box">
+                <h3>🔄 The Process:</h3>
+                <p><strong>1.</strong> Controller decides when to switch (duty cycle)<br>
+                <strong>2.</strong> Electronic switch (MOSFET) turns power ON/OFF<br>
+                <strong>3.</strong> Load (LED/motor) receives chopped power<br>
+                <strong>4.</strong> Process repeats thousands of times per second</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: How PWM Controls Power -->
+        <div class="slide">
+            <h1>⚡ How PWM Controls Power Delivery</h1>
+            <div class="definition-box">
+                <h3>🔋 The Magic: Average Power Control</h3>
+            </div>
+            
+            <div class="visual-container">
+                <svg class="waveform" viewBox="0 0 600 250">
+                    <!-- Power delivery visualization -->
+                    <g transform="translate(50, 30)">
+                        <!-- 25% Duty Cycle -->
+                        <text x="0" y="0" class="axis-label" style="font-size: 14px; font-weight: bold;">25% Duty Cycle</text>
+                        <rect x="0" y="10" width="30" height="30" fill="#667eea"/>
+                        <rect x="30" y="10" width="90" height="30" fill="#e2e8f0"/>
+                        <rect x="120" y="10" width="30" height="30" fill="#667eea"/>
+                        <rect x="150" y="10" width="90" height="30" fill="#e2e8f0"/>
+                        <text x="300" y="30" class="axis-label" style="font-size: 12px;">Average Power: 25%</text>
+                        
+                        <!-- 50% Duty Cycle -->
+                        <text x="0" y="70" class="axis-label" style="font-size: 14px; font-weight: bold;">50% Duty Cycle</text>
+                        <rect x="0" y="80" width="60" height="30" fill="#667eea"/>
+                        <rect x="60" y="80" width="60" height="30" fill="#e2e8f0"/>
+                        <rect x="120" y="80" width="60" height="30" fill="#667eea"/>
+                        <rect x="180" y="80" width="60" height="30" fill="#e2e8f0"/>
+                        <text x="300" y="100" class="axis-label" style="font-size: 12px;">Average Power: 50%</text>
+                        
+                        <!-- 75% Duty Cycle -->
+                        <text x="0" y="140" class="axis-label" style="font-size: 14px; font-weight: bold;">75% Duty Cycle</text>
+                        <rect x="0" y="150" width="90" height="30" fill="#667eea"/>
+                        <rect x="90" y="150" width="30" height="30" fill="#e2e8f0"/>
+                        <rect x="120" y="150" width="90" height="30" fill="#667eea"/>
+                        <rect x="210" y="150" width="30" height="30" fill="#e2e8f0"/>
+                        <text x="300" y="170" class="axis-label" style="font-size: 12px;">Average Power: 75%</text>
+                        
+                        <!-- Legend -->
+                        <rect x="400" y="10" width="20" height="15" fill="#667eea"/>
+                        <text x="430" y="22" class="axis-label" style="font-size: 12px;">Power ON (Full voltage)</text>
+                        <rect x="400" y="30" width="20" height="15" fill="#e2e8f0"/>
+                        <text x="430" y="42" class="axis-label" style="font-size: 12px;">Power OFF (Zero voltage)</text>
+                    </g>
+                </svg>
+            </div>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>🧮 The Math</h4>
+                    <p><strong>Full Power:</strong> 12V × 100ms = 1200V⋅ms</p>
+                    <p><strong>25% Duty:</strong> 12V × 25ms = 300V⋅ms</p>
+                    <p><strong>Result:</strong> 25% of full power delivered</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>💡 LED Example</h4>
+                    <p><strong>100% Duty:</strong> Maximum brightness</p>
+                    <p><strong>50% Duty:</strong> Half brightness</p>
+                    <p><strong>10% Duty:</strong> Very dim</p>
+                    <p><strong>Eye sees:</strong> Average brightness</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>🔧 Motor Example</h4>
+                    <p><strong>100% Duty:</strong> Full speed</p>
+                    <p><strong>75% Duty:</strong> 75% speed</p>
+                    <p><strong>25% Duty:</strong> Slow speed</p>
+                    <p><strong>Motor feels:</strong> Average voltage</p>
+                </div>
+            </div>
+            
+            <div class="definition-box">
+                <h3>🎯 Key Insight:</h3>
+                <p>PWM tricks the load into "thinking" it's getting a lower voltage by rapidly switching full voltage ON and OFF!</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Visual Representation -->
+        <div class="slide">
+            <h1>📊 Visual Representation</h1>
+            <div class="visual-container">
+                <svg class="waveform" viewBox="0 0 600 200">
+                    <!-- Grid lines -->
+                    <defs>
+                        <pattern id="grid" width="60" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 60 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)"/>
+                    
+                    <!-- Waveform -->
+                    <g transform="translate(30, 30)">
+                        <!-- 50% Duty Cycle -->
+                        <path d="M 0 100 L 0 20 L 60 20 L 60 100 L 120 100 L 120 20 L 180 20 L 180 100 L 240 100 L 240 20 L 300 20 L 300 100 L 360 100 L 360 20 L 420 20 L 420 100 L 480 100 L 480 20 L 540 20 L 540 100" 
+                              stroke="#667eea" stroke-width="3" fill="none"/>
+                        
+                        <!-- Labels -->
+                        <text x="30" y="140" text-anchor="middle" class="axis-label">t_on</text>
+                        <text x="90" y="140" text-anchor="middle" class="axis-label">t_off</text>
+                        <text x="60" y="160" text-anchor="middle" class="axis-label">T (Period)</text>
+                        
+                        <!-- Arrows -->
+                        <line x1="0" y1="130" x2="60" y2="130" stroke="#e53e3e" stroke-width="2"/>
+                        <line x1="60" y1="130" x2="120" y2="130" stroke="#38a169" stroke-width="2"/>
+                        <line x1="0" y1="150" x2="120" y2="150" stroke="#3182ce" stroke-width="2"/>
+                    </g>
+                </svg>
+            </div>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>This Example Shows:</h4>
+                    <p>50% Duty Cycle</p>
+                    <p>t_on = t_off</p>
+                    <p>Signal is ON half the time</p>
+                </div>
+                <div class="example-card">
+                    <h4>Calculation:</h4>
+                    <p>If T = 100ms</p>
+                    <p>t_on = 50ms</p>
+                    <p>Duty Cycle = (50/100) × 100% = 50%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Different Duty Cycles -->
+        <div class="slide">
+            <h1>🔄 Different Duty Cycle Examples</h1>
+            <table class="comparison-table">
+                <tr>
+                    <th>Duty Cycle</th>
+                    <th>Visual Pattern</th>
+                    <th>Description</th>
+                    <th>Applications</th>
+                </tr>
+                <tr>
+                    <td><strong>25%</strong></td>
+                    <td>▄▄▄_▄▄▄_▄▄▄_</td>
+                    <td>ON for 1/4 of the time</td>
+                    <td>Low brightness LED, Low power motor</td>
+                </tr>
+                <tr>
+                    <td><strong>50%</strong></td>
+                    <td>▄▄▄▄__▄▄▄▄__</td>
+                    <td>ON for 1/2 of the time</td>
+                    <td>Medium brightness, Square wave</td>
+                </tr>
+                <tr>
+                    <td><strong>75%</strong></td>
+                    <td>▄▄▄▄▄▄_▄▄▄▄▄▄_</td>
+                    <td>ON for 3/4 of the time</td>
+                    <td>High brightness LED, High power</td>
+                </tr>
+                <tr>
+                    <td><strong>90%</strong></td>
+                    <td>▄▄▄▄▄▄▄▄▄_▄▄▄▄▄▄▄▄▄_</td>
+                    <td>ON for 9/10 of the time</td>
+                    <td>Nearly full power, Bright lighting</td>
+                </tr>
+            </table>
+            
+            <div class="definition-box">
+                <h3>Key Insight:</h3>
+                <p><strong>Higher duty cycle = More time ON = More power delivered</strong></p>
+            </div>
+        </div>
+
+        <!-- Slide 5: PWM Example -->
+        <div class="slide">
+            <h1>⚡ PWM (Pulse Width Modulation)</h1>
+            <div class="definition-box">
+                <strong>PWM:</strong> A technique that uses duty cycle to control power delivery
+            </div>
+            
+            <h3>How PWM Works:</h3>
+            <div style="font-size: 1.2em; line-height: 2;">
+                <p><strong>1.</strong> Fixed frequency (period stays constant)</p>
+                <p><strong>2.</strong> Variable pulse width (duty cycle changes)</p>
+                <p><strong>3.</strong> Average power varies with duty cycle</p>
+            </div>
+
+            <div class="pwm-visual">
+                <svg width="100%" height="150" viewBox="0 0 800 150">
+                    <!-- 25% Duty Cycle -->
+                    <g transform="translate(50, 20)">
+                        <text x="0" y="0" class="axis-label">25% Duty Cycle</text>
+                        <rect x="0" y="10" width="40" height="20" fill="#667eea"/>
+                        <rect x="40" y="10" width="120" height="20" fill="#e2e8f0"/>
+                        <rect x="160" y="10" width="40" height="20" fill="#667eea"/>
+                        <rect x="200" y="10" width="120" height="20" fill="#e2e8f0"/>
+                    </g>
+                    
+                    <!-- 75% Duty Cycle -->
+                    <g transform="translate(50, 80)">
+                        <text x="0" y="0" class="axis-label">75% Duty Cycle</text>
+                        <rect x="0" y="10" width="120" height="20" fill="#667eea"/>
+                        <rect x="120" y="10" width="40" height="20" fill="#e2e8f0"/>
+                        <rect x="160" y="10" width="120" height="20" fill="#667eea"/>
+                        <rect x="280" y="10" width="40" height="20" fill="#e2e8f0"/>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="example-card">
+                <h4>💡 Result:</h4>
+                <p>25% duty cycle = 25% average power = Dim LED</p>
+                <p>75% duty cycle = 75% average power = Bright LED</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Real-World Applications -->
+        <div class="slide">
+            <h1>🌍 Real-World Applications</h1>
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>💡 LED Dimming</h4>
+                    <p><strong>Application:</strong> Smart lighting systems</p>
+                    <p><strong>How:</strong> PWM controls brightness</p>
+                    <p><strong>Example:</strong> 30% duty cycle = 30% brightness</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>🔧 Motor Speed Control</h4>
+                    <p><strong>Application:</strong> DC motor control</p>
+                    <p><strong>How:</strong> PWM varies average voltage</p>
+                    <p><strong>Example:</strong> 70% duty cycle = 70% max speed</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>🎵 Audio Systems</h4>
+                    <p><strong>Application:</strong> Class D amplifiers</p>
+                    <p><strong>How:</strong> PWM represents audio signals</p>
+                    <p><strong>Example:</strong> Duty cycle follows audio waveform</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>🔋 Battery Chargers</h4>
+                    <p><strong>Application:</strong> Charging control</p>
+                    <p><strong>How:</strong> PWM regulates charging current</p>
+                    <p><strong>Example:</strong> Lower duty cycle = slower charging</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>🌡️ Temperature Control</h4>
+                    <p><strong>Application:</strong> Heating elements</p>
+                    <p><strong>How:</strong> PWM controls heater power</p>
+                    <p><strong>Example:</strong> 40% duty cycle = 40% heat output</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>🚗 Automotive Systems</h4>
+                    <p><strong>Application:</strong> Engine control, lighting</p>
+                    <p><strong>How:</strong> PWM controls fuel injection, fan speed</p>
+                    <p><strong>Example:</strong> Variable duty cycle for efficiency</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Why Servos Use Duty Cycle -->
+        <div class="slide">
+            <h1>🤖 Why Servos Work ONLY on Duty Cycle</h1>
+            <div class="definition-box">
+                <h3>🎯 Servo Design: Built for Pulse Width Communication</h3>
+            </div>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>🧠 Inside a Servo</h4>
+                    <p><strong>• Control circuit:</strong> Reads pulse width</p>
+                    <p><strong>• Potentiometer:</strong> Senses current position</p>
+                    <p><strong>• DC motor:</strong> Moves to target position</p>
+                    <p><strong>• Feedback loop:</strong> Compares pulse vs position</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>⚡ Why PWM/Duty Cycle?</h4>
+                    <p><strong>• Digital communication:</strong> Immune to noise</p>
+                    <p><strong>• Precise timing:</strong> Microsecond accuracy</p>
+                    <p><strong>• Standard protocol:</strong> Works with any controller</p>
+                    <p><strong>• Simple wiring:</strong> Just 3 wires needed</p>
+                </div>
+            </div>
+            
+            <div class="visual-container">
+                <svg class="waveform" viewBox="0 0 600 200">
+                    <!-- Servo control visualization -->
+                    <g transform="translate(50, 30)">
+                        <!-- 20ms period line -->
+                        <line x1="0" y1="100" x2="400" y2="100" stroke="#e2e8f0" stroke-width="2"/>
+                        <text x="200" y="120" text-anchor="middle" class="axis-label" style="font-size: 12px;">20ms Period (50Hz)</text>
+                        
+                        <!-- 1.5ms pulse (90 degrees) -->
+                        <rect x="0" y="60" width="30" height="40" fill="#667eea"/>
+                        <rect x="30" y="60" width="370" height="40" fill="#e2e8f0"/>
+                        <text x="15" y="50" text-anchor="middle" class="axis-label" style="font-size: 10px;">1.5ms</text>
+                        <text x="15" y="140" text-anchor="middle" class="axis-label" style="font-size: 12px; font-weight: bold;">90° Position</text>
+                        
+                        <!-- Arrows and labels -->
+                        <path d="M 50 85 L 80 85" stroke="#e53e3e" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="100" y="80" class="axis-label" style="font-size: 10px;">Servo reads this pulse width</text>
+                        <text x="100" y="95" class="axis-label" style="font-size: 10px;">and moves to 90° position</text>
+                    </g>
+                </svg>
+            </div>
+            
+            <h3>🏆 Benefits of Servo PWM Control:</h3>
+            <div style="font-size: 1.2em; line-height: 2;">
+                <p><strong>1. Absolute Positioning:</strong> Pulse width = exact angle</p>
+                <p><strong>2. No Drift:</strong> Servo holds position without constant commands</p>
+                <p><strong>3. Noise Immunity:</strong> Digital signal unaffected by electrical noise</p>
+                <p><strong>4. Universal Standard:</strong> Same protocol for all servo brands</p>
+                <p><strong>5. Simple Interface:</strong> One signal wire controls everything</p>
+            </div>
+            
+            <div class="definition-box">
+                <h3>💡 Why Not Voltage Control?</h3>
+                <p><strong>Problem:</strong> Voltage levels vary, drift over time, affected by noise<br>
+                <strong>Solution:</strong> Time-based control is precise, digital, and reliable!</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Arduino Example -->
+        <div class="slide">
+            <h1>🤖 Arduino PWM Example</h1>
+            <div class="definition-box">
+                <h3>Practical Implementation: LED Brightness Control</h3>
+            </div>
+            
+            <div style="background: #1a202c; color: #e2e8f0; padding: 20px; border-radius: 10px; margin: 20px 0; font-family: monospace;">
+                <pre style="margin: 0; font-size: 1.1em;">
+// Arduino PWM Example - LED Brightness Control
+int ledPin = 9;      // PWM pin
+int brightness = 0;  // PWM value (0-255)
+
+void setup() {
+    pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+    // Fade in
+    for (brightness = 0; brightness <= 255; brightness += 5) {
+        analogWrite(ledPin, brightness);  // Set PWM duty cycle
+        delay(30);
+    }
+    
+    // Fade out
+    for (brightness = 255; brightness >= 0; brightness -= 5) {
+        analogWrite(ledPin, brightness);  // Set PWM duty cycle
+        delay(30);
+    }
+}
+                </pre>
+            </div>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>🔢 PWM Values</h4>
+                    <p><strong>0:</strong> 0% duty cycle (LED OFF)</p>
+                    <p><strong>127:</strong> 50% duty cycle (Half brightness)</p>
+                    <p><strong>255:</strong> 100% duty cycle (Full brightness)</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>⚙️ How it Works</h4>
+                    <p><strong>analogWrite():</strong> Generates PWM signal</p>
+                    <p><strong>Frequency:</strong> ~490 Hz (Arduino Uno)</p>
+                    <p><strong>Result:</strong> Smooth LED brightness control</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Servo Motor Example -->
+        <div class="slide">
+            <h1>🦾 Servo Motor Control</h1>
+            <div class="definition-box">
+                <strong>Servo Control:</strong> Uses duty cycle to set precise angular position
+            </div>
+            
+            <h3>How Servo PWM Works:</h3>
+            <div style="font-size: 1.2em; line-height: 2;">
+                <p><strong>• Frequency:</strong> 50 Hz (20ms period)</p>
+                <p><strong>• Pulse Width:</strong> 1-2ms determines angle</p>
+                <p><strong>• Duty Cycle:</strong> 5-10% range</p>
+            </div>
+
+            <table class="comparison-table">
+                <tr>
+                    <th>Pulse Width</th>
+                    <th>Duty Cycle</th>
+                    <th>Servo Position</th>
+                    <th>Angle</th>
+                </tr>
+                <tr>
+                    <td>1.0 ms</td>
+                    <td>5%</td>
+                    <td>Minimum</td>
+                    <td>0°</td>
+                </tr>
+                <tr>
+                    <td>1.5 ms</td>
+                    <td>7.5%</td>
+                    <td>Center</td>
+                    <td>90°</td>
+                </tr>
+                <tr>
+                    <td>2.0 ms</td>
+                    <td>10%</td>
+                    <td>Maximum</td>
+                    <td>180°</td>
+                </tr>
+            </table>
+
+            <div class="example-card">
+                <h4>🎯 Key Point:</h4>
+                <p>Small changes in duty cycle create precise angular control</p>
+                <p>This is why servos are perfect for robotics and RC vehicles!</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Measurement and Calculations -->
+        <div class="slide">
+            <h1>📏 Measuring Duty Cycle</h1>
+            <h3>Tools and Methods:</h3>
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>🔍 Oscilloscope</h4>
+                    <p><strong>Best method:</strong> Visual waveform analysis</p>
+                    <p><strong>Measure:</strong> Pulse width and period</p>
+                    <p><strong>Calculate:</strong> Duty cycle automatically</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>⏱️ Multimeter</h4>
+                    <p><strong>Modern DMMs:</strong> Can measure duty cycle</p>
+                    <p><strong>Frequency mode:</strong> Shows % directly</p>
+                    <p><strong>Limitation:</strong> Less detailed than scope</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>💻 Software Analysis</h4>
+                    <p><strong>Logic analyzers:</strong> Digital signal analysis</p>
+                    <p><strong>Microcontroller:</strong> Timer-based measurement</p>
+                    <p><strong>Sound cards:</strong> Audio frequency analysis</p>
+                </div>
+            </div>
+            
+            <div class="formula-box">
+                <h3>🧮 Practice Calculation</h3>
+                <p><strong>Given:</strong> Period T = 10ms, ON time = 3ms</p>
+                <p><strong>Calculate:</strong> Duty Cycle = (3ms / 10ms) × 100% = 30%</p>
+                <p><strong>Meaning:</strong> Signal is ON for 30% of each cycle</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Summary -->
+        <div class="slide">
+            <h1>📝 Summary & Key Takeaways</h1>
+            <div class="definition-box">
+                <h3>🎯 What We Learned</h3>
+                <p>Duty cycle is the percentage of time a signal is ON during one complete cycle</p>
+            </div>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>📐 Formula</h4>
+                    <p><strong>Duty Cycle (%) = (t_on / T) × 100%</strong></p>
+                    <p>Where t_on is ON time and T is total period</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>🔧 Applications</h4>
+                    <p>• LED brightness control</p>
+                    <p>• Motor speed control</p>
+                    <p>• Power regulation</p>
+                    <p>• Audio systems</p>
+                </div>
+                
+                <div class="example-card">
+                    <h4>💡 Key Insight</h4>
+                    <p><strong>Higher duty cycle = More average power</strong></p>
+                    <p>This relationship enables precise control in electronics</p>
+                </div>
+            </div>
+            
+            <div class="application-list">
+                <div class="app-item">PWM is the most common application</div>
+                <div class="app-item">Frequency usually stays constant</div>
+                <div class="app-item">Pulse width changes to vary duty cycle</div>
+                <div class="app-item">Enables efficient power control</div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <h3>🎓 Ready to Apply This Knowledge!</h3>
+                <p style="font-size: 1.2em; color: #667eea;">Try experimenting with PWM in your next electronics project!</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button class="nav-btn" onclick="changeSlide(-1)">⬅️ Previous</button>
+            <button class="nav-btn" onclick="changeSlide(1)">Next ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+        }
+        
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+        
+        // Touch/swipe navigation for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) changeSlide(1);
+            if (touchEndX - touchStartX > 50) changeSlide(-1);
+        });
+    </script>
+</body>
+</html>
